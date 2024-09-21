@@ -11,10 +11,10 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - ./add/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./add/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
   backend:
-    build: ./add
+    build: ./add/go-flow
     environment:
       MYSQL_HOST: db
       MYSQL_PORT: 3306
@@ -25,3 +25,19 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    volumes:
+      - shared-volume:/app-backend
+
+  ml:
+    build:
+        context: ./
+        dockerfile: ./add/ml-flow/Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - backend
+    volumes:
+      - shared-volume:/app-ml
+
+volumes:
+  shared-volume: {}

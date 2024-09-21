@@ -30,11 +30,11 @@ func startServer() {
 
 	router := mux.NewRouter()
 
-	router.HandleFunc("/auth/login", loginHandler).Methods("POST")
-	router.HandleFunc("/animals", animalsHandler).Methods("GET")
-	router.HandleFunc("/animal/{id}", animalDetailsHandler).Methods("GET")
-	router.HandleFunc("/animal/{id}", deleteAnimalHandler).Methods("DELETE")
-	router.HandleFunc("/animals", animalsAddHandler).Methods("POST")
+	router.HandleFunc("/api/v1/auth/login", loginHandler).Methods("POST")
+	router.HandleFunc("/api/v1/animals", animalsHandler).Methods("GET")
+	router.HandleFunc("/api/v1/animal/{id}", animalDetailsHandler).Methods("GET")
+	router.HandleFunc("/api/v1/animal/{id}", deleteAnimalHandler).Methods("DELETE")
+	router.HandleFunc("/api/v1/animals", animalsAddHandler).Methods("POST")
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

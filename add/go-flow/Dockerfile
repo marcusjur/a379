@@ -7,12 +7,15 @@ WORKDIR /app-backend
 COPY go.mod go.sum ./
 
 # Download the dependencies
+RUN apk add --no-cache gcc musl-dev
 RUN go mod download
 
 # Copy the Go application files
 COPY main.go ./
+COPY session/session.go ./session/
 
 # Build the Go app
+RUN CGO_ENABLED=1 go build -o libsession.so -buildmode=c-shared ./session/session.go
 RUN go build -o main .
 
 # Expose the ports
