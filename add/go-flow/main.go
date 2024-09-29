@@ -30,13 +30,44 @@ func startServer() {
 
 	router := mux.NewRouter()
 
+	// Define your API routes
 	router.HandleFunc("/api/v1/auth/login", loginHandler).Methods("POST")
 	router.HandleFunc("/api/v1/animals", animalsHandler).Methods("GET")
 	router.HandleFunc("/api/v1/animal/{id}", animalDetailsHandler).Methods("GET")
 	router.HandleFunc("/api/v1/animal/{id}", deleteAnimalHandler).Methods("DELETE")
 	router.HandleFunc("/api/v1/animals", animalsAddHandler).Methods("POST")
 
+	// Use middleware to set CORS headers
+	router.Use(corsMiddleware)
+	// Add OPTIONS handlers for all routes
+	router.PathPrefix("/api/v1/").Methods("OPTIONS").HandlerFunc(optionsHandler)
+
+
 	log.Fatal(http.ListenAndServe(":8080", router))
+}
+
+// General OPTIONS handler
+func optionsHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
+// CORS middleware to handle CORS preflight requests
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Set CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Replace with your frontend URL
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// Handle OPTIONS request
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		// Proceed to the next handler
+		next.ServeHTTP(w, r)
+	})
 }
 
 type Animal struct {
@@ -96,15 +127,12 @@ func animalsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func animalsAddHandler(w http.ResponseWriter, r *http.Request) {
-	// New code for POST method
 	var animal Animal
 	err := json.NewDecoder(r.Body).Decode(&animal)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	// TODO:Perform necessary validation on the animal object
 
 	// Insert the new animal into the database
 	result, err := db.Exec("INSERT INTO animals (name, owner, image) VALUES (?, ?, ?)", animal.Name, animal.Owner, animal.Image)
@@ -125,21 +153,23 @@ func animalsAddHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func animalDetailsHandler(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id := params["id"]
+    params := mux.Vars(r)
+    id := params["id"]
 
-	var animal Animal
-	err := db.QueryRow("SELECT id, name, owner, image FROM animals WHERE id = ?", id).Scan(
-		&animal.ID, &animal.Name, &animal.Owner, &animal.Image,
-	)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
+    var animal Animal
+    var tagsString string
+    err := db.QueryRow("SELECT id, name, tags, owner, image FROM animals WHERE id = ?", id).Scan(
+       &animal.ID, &animal.Name, &tagsString, &animal.Owner, &animal.Image,
+    )
+    if err != nil {
+       http.Error(w, err.Error(), http.StatusInternalServerError)
+       return
+    }
 
-	animal.Tags = []string{"dog", "pet"} // Example tags
+    // Split the tags string into a slice of strings
+    animal.Tags = strings.Split(tagsString, ",")
 
-	json.NewEncoder(w).Encode(animal)
+    json.NewEncoder(w).Encode(animal)
 }
 
 func deleteAnimalHandler(w http.ResponseWriter, r *http.Request) {

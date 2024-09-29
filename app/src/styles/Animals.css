@@ -1,0 +1,38 @@
+.container {
+  padding: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.animal-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.animal-item {
+  border: 1px solid #ccc;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.animal-name {
+  font-size: 18px;
+}
+
+.animal-button {
+  padding: 5px 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.animal-button:hover {
+  background-color: #218838;
+}

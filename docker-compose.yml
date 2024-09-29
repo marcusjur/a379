@@ -39,5 +39,17 @@ services:
     volumes:
       - shared-volume:/app-ml
 
+  frontend:
+    build:
+      context: ./app/
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./app:/app
+    command: npm start
+
 volumes:
   shared-volume: {}
