@@ -1,3 +1,21 @@
+.root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(1, 46, 87);
+}
+
+@font-face {
+  font-family: verdana, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: verdana, sans-serif;
+}
+
 .container {
   padding: 20px;
   max-width: 600px;
@@ -15,6 +33,7 @@ h1 {
 p {
   font-size: 1.2em;
   margin: 5px 0;
+    color: white;
 }
 
 img {

@@ -1,3 +1,21 @@
+.root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgb(1, 46, 87);
+}
+
+@font-face {
+  font-family: verdana, sans-serif;
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  font-family: verdana, sans-serif;
+}
+
 .container {
   padding: 20px;
 }
@@ -22,17 +40,67 @@ h1 {
 
 .animal-name {
   font-size: 18px;
+  color: #fff;
+  margin: auto;
+  width: 500px;
+}
+
+input {
+  width: 90%;
+  margin: auto;
+  padding: 10px;
 }
 
 .animal-button {
+  padding: 10px 150px;
+  white-space: nowrap;
+  background-color: gold;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.add-animal-button{
+  padding: 15px 10px;
+  background-color: gold;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button{
   padding: 5px 10px;
-  background-color: #28a745;
-  color: white;
+  background-color: gold;
+  color: black;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .animal-button:hover {
-  background-color: #218838;
+  background-color: goldenrod;
 }
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+}
+

@@ -57,7 +57,7 @@ func corsMiddleware(next http.Handler) http.Handler {
 		// Set CORS headers
 		w.Header().Set("Access-Control-Allow-Origin", "*") // Replace with your frontend URL
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		w.Header().Set("Access-Control-Allow-Headers", "*")
 
 		// Handle OPTIONS request
 		if r.Method == http.MethodOptions {
@@ -127,15 +127,24 @@ func animalsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func animalsAddHandler(w http.ResponseWriter, r *http.Request) {
-	var animal Animal
+	var animal struct {
+	    ID    int    `json:"id"`
+		Name  string `json:"name"`
+		Owner string `json:"owner"`
+		Tags  string `json:"tags"`
+		Image string `json:"image"`
+	}
+
+	// Decode incoming JSON
 	err := json.NewDecoder(r.Body).Decode(&animal)
 	if err != nil {
+	    fmt.Println(err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	// Insert the new animal into the database
-	result, err := db.Exec("INSERT INTO animals (name, owner, image) VALUES (?, ?, ?)", animal.Name, animal.Owner, animal.Image)
+	result, err := db.Exec("INSERT INTO animals (name, owner, tags, image) VALUES (?, ?, ?, ?)", animal.Name, animal.Owner, animal.Tags, animal.Image)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
